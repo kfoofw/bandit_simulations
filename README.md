@@ -4,7 +4,7 @@ Bandit algorithms simulations and analysis for online learning
 This repo is part of my interest to learn more about optimisation for online learning algorithms which is heavily centerd on bandit theory. 
 
 Analysis includes:
-- [Epsilon Greedy](https://github.com/kfoofw/bandit_simulations/analysis/eps-greedy.md)
+- [Epsilon Greedy](https://github.com/kfoofw/bandit_simulations/blob/master/analysis/eps-greedy.md)
 - UCB (in future)
 - Thompson Sampling
 - Contextual Bandits

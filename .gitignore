@@ -1,1 +1,3 @@
 *.tsv
+.Rproj.user
+*.rds

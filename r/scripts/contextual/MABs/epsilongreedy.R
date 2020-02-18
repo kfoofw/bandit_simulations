@@ -1,3 +1,5 @@
+# https://nth-iteration-labs.github.io/contextual/articles/epsilongreedy.html
+
 library(contextual)
 
 policy <- EpsilonGreedyPolicy$new(epsilon = 0.1)

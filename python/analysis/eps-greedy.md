@@ -60,8 +60,7 @@ class BernoulliArm():
         if random.random() > self.p:
             return 0.0
         else:
-            return 1.0
-        
+            return 1.0     
 ```
 To proceed with any further analysis, an operational script is required to process the simulation. The following code helps to create a simulation for a specific run of epsilon value.
 - num_sims: Represents the number of independent simulations, each of length equal to 'horizon'.

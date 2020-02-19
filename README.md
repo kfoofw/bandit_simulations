@@ -7,16 +7,17 @@ This repo is part of my interest to learn more about optimisation for online lea
 
 This repo is segmented into both Python and R.
 - Python: 
-    - Comprises coding of certain Multi-Armed Bandit algorithms for experimentation
-    - Gold standard package for online learning `vowpal wabbit` will be used to illustrate contextual bandits
+    - Comprises coding of certain Multi-Armed Bandit algorithms for experimentation (Phase 1 analysis)
+    - Gold standard package for online learning `vowpal wabbit` will be used to illustrate contextual bandits (Phase 2 analysis)
 - R: 
-    - Utilises `contextual` library package that has a comprehensive ecosystem for different policies.
+    - Utilises `contextual` library package that has a comprehensive ecosystem for different policies (Phase 3 analysis)
 
-Current analysis includes:
+Phase 1 MAB analysis includes:
 - [Epsilon Greedy](https://github.com/kfoofw/bandit_simulations/blob/master/python/analysis/eps-greedy.md)
-- UCB (in future)
-- Thompson Sampling
-- Contextual Bandits
+- [SoftMax](https://github.com/kfoofw/bandit_simulations/blob/master/python/analysis/softmax.md)
+- [UCB](https://github.com/kfoofw/bandit_simulations/blob/master/python/analysis/ucb.md)
+- Thompson Sampling (future)
+
 
 ## Special Mention
 A portion of the code is based on the book ["Bandit Algorithms for Website Optimization"](https://www.oreilly.com/library/view/bandit-algorithms-for/9781449341565/) by John Myles White.

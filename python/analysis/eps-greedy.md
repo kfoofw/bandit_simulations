@@ -1,7 +1,7 @@
 # Analysis of Epsilon Greedy Algorithm
 
 The Epsilon Greedy algorithm is one of the key algorithms behind decision sciences, and embodies the balance of exploration versus exploitation. The dilemma between exploration versus exploitation can be defined simply based on:
-- Eploitation: Based on what you know of the circumstances, choose the option/action that has the best average return.
+- Exploitation: Based on what you know of the circumstances, choose the option/action that has the best average return.
 - Exploration: Recognise that what you know of the different options may be limited, and choose to engage in options that may potentially reveal themselves to be of high return
 
 By convention, "epsilon" represents the percentage of time/trials dedicated for exploration, and it is also typical to do random exploration. This introduces some form of stochasticity.
@@ -12,7 +12,8 @@ Below is the code for creation of the Epsilon Greedy algorithm setup and progres
 - Counts: Represent recorded times when arm was pulled.
 - Values: Represent the known mean reward. In the case of a Bernoulli arm, values represent the probability of reward which ranges from 0 to 1.
 
-```class EpsilonGreedy():
+```
+class EpsilonGreedy():
     def __init__(self, epsilon, counts, values):
         self.epsilon = epsilon
         self.counts = counts # Count represent counts of pulls for each arm. For multiple arms, this will be a list of counts.
@@ -47,7 +48,7 @@ Below is the code for creation of the Epsilon Greedy algorithm setup and progres
         return
 ```
 
-With the algorithm setup for Espsilon Greedy, we need to discuss the distribution of the arm/action. Think of each arm/action as a coin flip. The outcome of a coin flip is of a dichotomous nature, either Heads or Tails. Thus, we can implement a Bernoulli distribution for each arm. This essentially becomes our Reward information distribution system for each arm.
+With the algorithm setup for Epsilon Greedy, we need to discuss the distribution of the arm/action. Think of each arm/action as a coin flip. The outcome of a coin flip is of a dichotomous nature, either Heads or Tails. Thus, we can implement a Bernoulli distribution for each arm. This essentially becomes our Reward information distribution system for each arm.
 
 ```
 class BernoulliArm():
@@ -125,7 +126,7 @@ random.shuffle(means)
 arms = list(map(lambda mu: BernoulliArm(mu), means))
 print("Best arm is " + str(np.argmax(means)))
 
-f = open("standard_results.tsv", "w+")
+f = open("standard_results_epsg.tsv", "w+")
 
 # Create simulations for each exploration epsilon value
 for epsilon in [0.1, 0.2, 0.3, 0.4, 0.5]:

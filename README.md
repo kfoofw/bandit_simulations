@@ -13,7 +13,7 @@ This repo is segmented into both Python and R.
     - Utilises `contextual` library package that has a comprehensive ecosystem for different policies.
 
 Current analysis includes:
-- [Epsilon Greedy](https://github.com/kfoofw/bandit_simulations/blob/master/analysis/eps-greedy.md)
+- [Epsilon Greedy](https://github.com/kfoofw/bandit_simulations/blob/master/python/analysis/eps-greedy.md)
 - UCB (in future)
 - Thompson Sampling
 - Contextual Bandits

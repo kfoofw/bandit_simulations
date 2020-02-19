@@ -141,14 +141,17 @@ f.close()
 ```
 Using some data-preprocessing and basic Altair visualisation, we can plot the probability of pulling the best arm for each epsilon value.
 
-![Rate of choosing best arm from 5000 runs for each Epsilon](../img/rate-best-arm_5-arms_0dot1-0dot9.png)
+<p align="center">
+<img src="../img/rate-best-arm_5-arms_0dot1-0dot9_epsg.png" />
+</p>
 
 Note that the epsilon greedy algorithm has asymptotic performance due to its inherent nature of exploration. We can observe that the higher the value of epsilon, the lower its asymptotic performance. For example, for 0.5 epsilon, the asymptotic value is actually 60%. This is broken down to 50% for pure exploitation, and an added 10% due to the random exploration (1/5 chance for the remaining 50% for exploration). Likewise, for 0.1 epsilon, the asymptote is around 92%. This is brokwn down to 90% for pure exploitation, and an added 2% due to random exploration (1/5 chance for remaining 10% for exploration).
 
 Another thing worth noting is the rate of convergence. The higher the rate of exploration, the earlier the algorithm discovers the best arm. This is shown by how rapid the line plots increases (until it hits its asymptote). It is interesting to note that the rate of best-arm-discovery is not linear, as shown by how epsilon 0.1 seems to be exponentially slower compared to the others.
 
-
-![Cumulative reward from 5000 runs for each Epsilon](../img/cum-reward_5-arms_0dot1-0dot9.png)
+<p align="center">
+<img src="../img/cum-reward_5-arms_0dot1-0dot9_epsg.png" />
+</p>
 
 Taking another look at the cumulative reward system, within the given time horizon of 250 steps, neither 0.1 nor 0.5 epsilon values are the best performers. The best performer is instead 0.2, which has a combination of fast convergence to best arm exploitation and high asymptote.
 
@@ -164,14 +167,17 @@ The previous analysis was a simulation exercise on arms with big differences in 
 
 In the following case, we simulate 5 arms, 4 of which have a mean of 0.8 while the last/best has a mean of 0.9.
 
-![Rate of choosing best arm from 5000 runs for each Epsilon 2](../img/rate-best-arm_5-arms_0dot8-0dot9.png)
+<p align="center">
+<img src="../img/rate-best-arm_5-arms_0dot8-0dot9_epsg.png" />
+</p>
 
 Due to the relatively closer difference in reward means, the algorithm now takes much longer to approach the asymptotic limit. With the given time horizon of 250 steps, it simply was insufficient for the algorithm to discover the best arm as compared to the experiment done in the previous section.
 
 Once again, we also observe that epsilon value of 0.1 takes much longer to discover the best arm compared to the others.
 
-
-![Cumulative reward from 5000 runs for each Epsilon 2](../img/cum-reward_5-arms_0dot8-0dot9.png)
+<p align="center">
+<img src="../img/cum-reward_5-arms_0dot8-0dot9_epsg.png" />
+</p>
 
 Additionally, the cumulative rewards for all epsilon values are much closer in nature so much so that they are indistinguishable. This is probably due to the fact that the reward means of all arms are quite close, and also the fact that within the time horizon, the algorithms have not discovered the best arm yet.
 

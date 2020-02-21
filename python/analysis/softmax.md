@@ -215,6 +215,14 @@ It should be noted that in this scenario, for Epsilon Greedy algorithm, the rate
 
 Similar to what we saw in the Epsilon Greedy analysis, the cumulative rewards for all `tau` values are much closer in nature so much so that they are indistinguishable. Likewise, this is probably due to the fact that the reward means of all arms are quite close.
 
+Since the arms are close in average returns, it will be more interesting to verify the overall cumulative regret.
+
+<p align="center">
+<img src="../img/cum-regret_5-arms_0dot8-0dot9_soft.png" />
+</p>
+
+Based on the cumulative regret plots, we see that `tau` value of 0.2 is the best at around 15.5 while `tau` value of 0.5 is the worst at 19.2. On a whole, the Softmax algorithm is worst off compared to the Epsilon Greedy algorithm which had a range of 12.3 to 14.8. For the better performing `tau` values, there is a tapering off in the plots but as a whole, the Softmax algorithm does seem to fare worser than Epsilon Greedy.
+
 ## Summary
 In this analysis of Softmax algorithm, we covered the algorithmic intuition as well as the experimental results of applying the Softmax algorithm. The results were benchmarked against the Epsilon Greedy algorithm which was covered previously.
 

@@ -181,6 +181,14 @@ Once again, we also observe that epsilon value of 0.1 takes much longer to disco
 
 Additionally, the cumulative rewards for all epsilon values are much closer in nature so much so that they are indistinguishable. This is probably due to the fact that the reward means of all arms are quite close, and also the fact that within the time horizon, the algorithms have not discovered the best arm yet.
 
+Taking a look at the overall cumulative regret may provide a better perspective of the performance.
+
+<p align="center">
+<img src="../img/cum-regret_5-arms_0dot8-0dot9_epsg.png" />
+</p>
+
+As shown, `epsilon` value of 0.2 is the best which is followed closely by `epsilon` value of 0.3. The overall cumulative regret ranges between 12.3 to 14.8. There is also some form of tapering off which shows a reduction in progressive regret accumlation.  
+
 ## Limitations of Analysis
 The analysis is heavily based on a simulation based experiment where the rewards distributions are assumed to be stationary. In practical real world applications, the reward distributions may shift with time, and the algorithm has to continuously ensure that there is sufficient exploration to rediscover the best arm/action to take. 
 

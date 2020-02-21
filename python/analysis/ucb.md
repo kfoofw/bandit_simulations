@@ -2,7 +2,7 @@
 
 The Upper Confidence Bound (UCB) algorithm is often phrased as "optimism in the face of uncertainty". To understand why, consider at a given round that each arm's reward function can be perceived as a point estimate based on the average rate of reward as observed. Drawing intuition from confidence intervals, for each point estimate, we can also incorporate some form of uncertainty boundary around the point estimate. In that sense, we have both lower boundary and upper boundary for each arm. 
 
-The UCB algorithm is aptly named because we are only concerned with the upper bound.
+The UCB algorithm is aptly named because we are only concerned with the upper bound, given that we are trying to find the arm with the highest reward rate.
 
 There are different variants of the UCB algorithms but in this article, we will take a look at the UCB1 algorithm. At each given round of `n` trials, the reward UCB of all arms are represented by the following:
 

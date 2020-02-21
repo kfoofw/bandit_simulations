@@ -18,6 +18,11 @@ Phase 1 MAB analysis includes:
 - [UCB](https://github.com/kfoofw/bandit_simulations/blob/master/python/analysis/ucb.md)
 - [Thompson Sampling](https://github.com/kfoofw/bandit_simulations/blob/master/python/analysis/ts.md)
 
+Phase 2 CB analysis (Currently ongoing):
+- Introduction to `vowpal wabbit`
+
+Phase 3 MAB & CB analysis (Future works)
+
 ## Special Mention
 A portion of the code is based on the book ["Bandit Algorithms for Website Optimization"](https://www.oreilly.com/library/view/bandit-algorithms-for/9781449341565/) by John Myles White.
 

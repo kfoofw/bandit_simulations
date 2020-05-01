@@ -1,3 +1,5 @@
 *.tsv
 .Rproj.user
 *.rds
+vpml_activate.txt
+*.Rhistory

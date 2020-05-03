@@ -7,8 +7,11 @@ This repo is part of my interest to learn more about optimisation for online lea
 
 This repo is segmented into both Python and R.
 - Python: 
-    - __Phase 1 MAB analysis:__ Comprises coding of certain Multi-Armed Bandit algorithms for experimentation. Largely based on the book ["Bandit Algorithms for Website Optimization"](https://www.oreilly.com/library/view/bandit-algorithms-for/9781449341565/) by John Myles White.
-    - __Phase 2 CB analysis:__ Learning how to use the gold standard package for online learning `vowpal wabbit` for contextual bandits
+    - __Phase 1 MAB analysis:__ 
+    Comprises coding of certain Multi-Armed Bandit algorithms for experimentation. Largely based on the book ["Bandit Algorithms for Website Optimization"](https://www.oreilly.com/library/view/bandit-algorithms-for/9781449341565/) by John Myles White.
+    - __Phase 2 CB analysis:__ 
+    Implementation of certain contextual bandit algorithms starting with LinUCB based on [A Contextual-Bandit Approach to Personalized News Article Recommendation](https://arxiv.org/pdf/1003.0146.pdf). 
+    - __Phase 3 CB analysis:__ Utilise use `vowpal wabbit` package for online learning for contextual bandits simulation
 - R: 
     - __Phase 3 MAB & CB analysis:__ Using R library package `contextual` that has a comprehensive ecosystem for different algorithm and policies
 
@@ -19,7 +22,7 @@ Phase 1 MAB analysis includes:
 - [Thompson Sampling](https://github.com/kfoofw/bandit_simulations/blob/master/python/analysis/ts.md)
 
 Phase 2 CB analysis (Currently ongoing):
-- Introduction to `vowpal wabbit`
+- LinUCB Disjoint Analysis
 
 Phase 3 MAB & CB analysis (Future works)
 

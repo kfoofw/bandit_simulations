@@ -1,6 +1,6 @@
 # Contextual Bandit: Linear Upper Confidence Bound Disjoint (LinUCB Disjoint) Algorithm
 
-Contextual bandits (CB) are more granular in terms of the way they use information. Compared to their Multi-armed Bandits (MAB), we utilise contextual information about the observed instance in order to recommend the most effective variant.
+Contextual bandits (CB) are more granular in terms of the way they use information. Compared to their Multi-armed Bandits (MAB) counterparts, we utilise contextual information about the observed instance in order to recommend the most effective variant.
 
 Let's use an example of A/B testing. Assume a website has 3 webpage variants (A, B, C), and the objective is to optimise the click through rate (CTR):
 - With a MAB approach, the variants are treated similarly, and the objective is to find the webpage that has the highest CTR for all user traffic
@@ -38,7 +38,7 @@ The algorithm thus explore arms that might not be a good performer which we have
 
 In the paper ["A Contextual-Bandit Approach to Personalized News Article Recommendation"](https://arxiv.org/abs/1003.0146), Li et al. demonstrated the use of a contextual multi-armed bandit solution where the expected pay off `r_{t,a}` of an arm `a` is linear in its context covariates `x_{t,a}` at  time `t`. This is called Linear UCB Disjoint (LinUCB).
 
-A simple example of this is demonstrated by his lecture slides by Assoc Prof Yue Yisong, which can be found [here](http://www.yisongyue.com/courses/cs159/lectures/LinUCB.pdf). In the example of a news article recommendation, there are two user groups with their corresponding context (young and old demographics) as shown by the relevant `x_1` (young) or `x_2` (old) feature vector. Based on the learnt weights `theta`, we can perform matrix multiplication to predict the pay off for the recommended article.
+A simple example of this is demonstrated in his lecture slides by Caltech Assoc Prof Yue Yisong, which can be found [here](http://www.yisongyue.com/courses/cs159/lectures/LinUCB.pdf). In the example of a news article recommendation, there are two user groups with their corresponding context (young and old demographics) as shown by the relevant `x_1` (young) or `x_2` (old) feature vector. Based on the learnt weights `theta`, we can perform matrix multiplication to predict the pay off for the recommended article.
 
 <div align="center">
     <img src="../img/caltech_linucb_lect.png"/>
@@ -324,8 +324,7 @@ Coming to the end of this, I showed that the use of contextual bandits makes mor
     <img src="../img/paper_hybrid_eqn.png"/>
 </div>
 
-The hybrid model has an additional feature term `z_t`, which comprises of shared features across various arms. According to the paper, `z_t` is the feature of the current user/article combina-
-tion while `β*` is an unknown coefficient vector common to all arms. I will not cover that in this article but I will probably do it in a separate article.
+The hybrid model has an additional feature term `z_t`, which comprises of shared features across various arms. According to the paper, `z_t` is the feature of the current user/article combinations while `β*` is an unknown coefficient vector common to all arms. I will not cover that in this article but I will probably do it in a separate article.
 
 # Summary
 

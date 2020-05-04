@@ -10,7 +10,7 @@ In short, the difference between MABs and CBs can be illustrated by the followin
 - MABs are created with the "one size fits all" in mind while seeking the most superior solution.
 - CBs are created with the concept of having bespoke solutions for different circumstances.
 
-# Upper Confidene Bound (UCB)
+# Upper Confidence Bound (UCB)
 
 The Upper Confidence Bound (UCB) algorithm is often phrased as "optimism in the face of uncertainty". Consider at a given timestep that each arm's reward function can be perceived as a point estimate based on the average rate of reward as observed. Drawing intuition from confidence intervals, for each point estimate, we can also incorporate some form of uncertainty boundary around the point estimate. In that sense, we have both lower boundary and upper boundary for each arm. 
 

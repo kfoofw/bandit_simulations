@@ -129,7 +129,7 @@ For the data set, we will use the dataset from [here](http://www.cs.columbia.edu
 
 The trouble with simulation using a logged data set is that not all time steps will be useful. For example, for a given time step, if the LinUCB policy selects an arm that is not the same arm selected in the logged data, we cannot observe the reward function. Thus, the data for that time step is not relevant. 
 
-To circumvent that, we only choose to observe the reward and perform online learning IF AND ONLY IF our policy selects the same arm as the logged data at that particular time step. Otherwise, we will move on to the next time step without any updates. Implicitly, this requires the assumption that the data points for the different time steps are independent of each other. For more details on this methodology of , please refer to the paper ["Unbiased Offline Evaluation of Contextual-bandit-based News Article Recommendation Algorithms"](https://arxiv.org/abs/1003.5956) by Li et al.
+To circumvent that, we only choose to observe the reward and perform online learning IF AND ONLY IF our policy selects the same arm as the logged data at that particular time step. Otherwise, we will move on to the next time step without any updates. Implicitly, this requires the assumption that the data points for the different time steps are independent of each other. For more details on this methodology, please refer to the paper ["Unbiased Offline Evaluation of Contextual-bandit-based News Article Recommendation Algorithms"](https://arxiv.org/abs/1003.5956) by Li et al.
 
 To implement the algorithm in Python code, we just need `numpy` for the matrix calculations. Along with each code chunk, I added comments to make it more understandable in terms of the algorithm.
 

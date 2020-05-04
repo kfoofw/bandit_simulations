@@ -16,15 +16,17 @@ This repo is segmented into both Python and R.
     - __Phase 3 MAB & CB analysis:__ Using R library package `contextual` that has a comprehensive ecosystem for different algorithm and policies
 
 Phase 1 MAB analysis includes:
-- [Epsilon Greedy](https://github.com/kfoofw/bandit_simulations/blob/master/python/analysis/eps-greedy.md)
-- [SoftMax](https://github.com/kfoofw/bandit_simulations/blob/master/python/analysis/softmax.md)
-- [UCB](https://github.com/kfoofw/bandit_simulations/blob/master/python/analysis/ucb.md)
-- [Thompson Sampling](https://github.com/kfoofw/bandit_simulations/blob/master/python/analysis/ts.md)
+- [Epsilon Greedy](https://github.com/kfoofw/bandit_simulations/blob/master/python/multiarmed_bandits/analysis/eps-greedy.md)
+- [SoftMax](https://github.com/kfoofw/bandit_simulations/blob/master/python/multiarmed_bandits/analysis/softmax.md)
+- [UCB](https://github.com/kfoofw/bandit_simulations/blob/master/python/multiarmed_bandits/analysis/ucb.md)
+- [Thompson Sampling](https://github.com/kfoofw/bandit_simulations/blob/master/python/multiarmed_bandits/analysis/ts.md)
 
 Phase 2 CB analysis (Currently ongoing):
-- LinUCB Disjoint Analysis
+- [LinUCB Disjoint Implementation and Analysis with a Dataset](https://github.com/kfoofw/bandit_simulations/blob/master/python/contextual_bandits/analysis/linUCB%20implementation%20and%20analysis.md)
 
-Phase 3 MAB & CB analysis (Future works)
+Phase 3 CB analysis (Future works)
+
+Phase 4 MAB & CB analysis (Future works)
 
 ## Special Mention
 A portion of the code is based on the book ["Bandit Algorithms for Website Optimization"](https://www.oreilly.com/library/view/bandit-algorithms-for/9781449341565/) by John Myles White.

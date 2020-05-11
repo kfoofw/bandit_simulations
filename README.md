@@ -22,7 +22,7 @@ Phase 1 MAB analysis includes:
 - [Thompson Sampling](https://github.com/kfoofw/bandit_simulations/blob/master/python/multiarmed_bandits/analysis/ts.md)
 
 Phase 2 CB analysis (Currently ongoing):
-- [LinUCB Disjoint Implementation and Analysis with a Dataset](https://github.com/kfoofw/bandit_simulations/blob/master/python/contextual_bandits/analysis/linUCB%20implementation%20and%20analysis.md)
+- [LinUCB Disjoint Implementation and Analysis with a Dataset](https://github.com/kfoofw/bandit_simulations/blob/master/python/contextual_bandits/analysis/linUCB%20disjoint%20implementation%20and%20analysis.md)
 
 Phase 3 CB analysis (Future works)
 

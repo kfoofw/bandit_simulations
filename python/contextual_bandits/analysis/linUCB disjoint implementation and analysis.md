@@ -265,23 +265,20 @@ def ctr_simulator(K_arms, d, alpha, data_path):
             covariate_string_list = line_data.split()[2:]
             data_x_array = np.array([float(covariate_elem) for covariate_elem in covariate_string_list])
 
-            # For all arms in policy
-            for i in range(linucb_policy_object.K_arms):
+            # Find policy's chosen arm based on input covariates at current time step
+            arm_index = linucb_policy_object.select_arm(data_x_array)
 
-                # Find policy's chosen arm based on input covariates at current time step
-                arm_index = linucb_policy_object.select_arm(data_x_array)
+            # Check if arm_index is the same as data_arm (ie same actions were chosen)
+            # Note that data_arms index range from 1 to 10 while policy arms index range from 0 to 9.
+            if arm_index + 1 == data_arm:
 
-                # Check if arm_index is the same as data_arm (ie same actions were chosen)
-                # Note that data_arms index range from 1 to 10 while policy arms index range from 0 to 9.
-                if arm_index + 1 == data_arm:
+                # Use reward information for the chosen arm to update
+                linucb_policy_object.linucb_arms[arm_index].reward_update(data_reward, data_x_array)
 
-                    # Use reward information for the chosen arm to update
-                    linucb_policy_object.linucb_arms[arm_index].reward_update(data_reward, data_x_array)
-
-                    # For CTR calculation
-                    aligned_time_steps += 1
-                    cumulative_rewards += data_reward
-                    aligned_ctr.append(cumulative_rewards/aligned_time_steps)
+                # For CTR calculation
+                aligned_time_steps += 1
+                cumulative_rewards += data_reward
+                aligned_ctr.append(cumulative_rewards/aligned_time_steps)
                     
     return (aligned_time_steps, cumulative_rewards, aligned_ctr, linucb_policy_object)
 ```

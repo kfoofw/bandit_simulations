@@ -16,7 +16,7 @@ However, in certain applications, one may consider that the arms are not mutuall
 
 Consider 3 articles wherein the first two are sports related and the third is science fiction, it is more likely that users who like the first sports article will prefer the 2nd sports article compared to the science fiction article.
 
-This brings us to the concept of LinUCB hybrid with Hybrid Linear Models (LinUCB Hybrid) algorithm which was discussed in the paper ["A Contextual-Bandit Approach to Personalized News Article Recommendation"](https://arxiv.org/abs/1003.0146). The hybrid model states that the reward payoff of each arm is a linear function of shared and non-shared components as shown by:
+This brings us to the concept of LinUCB hybrid with Hybrid Linear Models (LinUCB Hybrid) algorithm which was discussed in the paper ["A Contextual-Bandit Approach to Personalized News Article Recommendation"](https://arxiv.org/abs/1003.0146). The hybrid model states that the reward payoff of each arm is a linear function of __shared and non-shared__ components as shown by:
 
 <div align="center">
     <img src="../img/paper_hybrid_eqn.png"/>
@@ -271,14 +271,15 @@ For the data set, we will use the MovieLens dataset from [here](http://files.gro
 - __Movies data__: Information about movies based on their genres. Movies will represent the arms in this experiment. Thus, their genres will represent the attributes of the arms.
 - __User Movie Ratings__: This shows how users react to the different movies as represented by the ratings (1 to 5). 
 
-For this experiment, I will take the perspective of using contextual bandits in a recommender system. __For each encountered user (and their contextual information), the policy will recommend the best movie, and observe the reward that will be used for online learning in order to recommend better movies.__ 
+For this experiment, I will take the perspective of using contextual bandits in a recommender system. __For each encountered user (and their contextual information), the policy will recommend the best movie (which are treated as arms), and observe the reward that will be used for online learning in order to recommend better movies.__ 
 - The reward is defined to be 1 if the user's rating for a movie is 5, and 0 otherwise (4 or below). 
 - I will use the top 30 movies in terms of number of user ratings.
 
 Here's a short summary of the preprocessing I did to obtain both context (user) features and arms (movies) attributes:
-- For users, I created age group buckets ('<20', '20-29', '30-39','40-49', '51-60', '60+'). I subsequently created one-hot encoding for "agegroups", "gender" and "occupation". Although "zipcode" is probably very useful, I decided not to use it as I did not know how to properly encode a good relationship across zip code groups.
+- For users, I created age group buckets ('<20', '20-29', '30-39','40-49', '51-60', '60+'). I subsequently created one-hot encoding for "agegroups", "gender" and "occupation". Although "zipcode" is probably very useful, I decided not to use it as I did not know how to properly encode a good relationship across zipcode groups.
 - For Movies features, it was simply left as it is in terms of "genres".
-- For ratings data, I created the binary reward label based on the condition that the ratings must be 5 to have a reward of 1. At the same time, I only filtered the ratings data to include only the top 20 movies.
+- For ratings data, I created the binary reward label based on the condition that the ratings must be 5 to have a reward of 1.
+- I only filtered the ratings data to include only the top 30 movies.
 - I also performed randomisation of the data order such that it simulates the online learning environment.
 
 Similar to what we did in the LinUCB disjoint analysis, we only choose to observe the reward and perform online learning IF AND ONLY IF our policy selects the same arm as the logged data at that particular time step. Otherwise, we will move on to the next time step without any updates. Implicitly, this requires the assumption that the data points for the different time steps are independent of each other. For more details on this methodology, please refer to the paper ["Unbiased Offline Evaluation of Contextual-bandit-based News Article Recommendation Algorithms"](https://arxiv.org/abs/1003.5956) by Li et al. For time steps in which the above is true, I term them as "aligned time steps".
@@ -381,44 +382,67 @@ def ctr_simulator(K_arms, d, k, alpha, epochs, top_movies_index, top_movies_feat
 ```
 # LinUCB Disjoint Policy with varying `alpha` values
 
-We can now simulate the data to see how the LinUCB hybrid performs. For comparison, the filtered data
-
-```
-<div align="center">
-    <img src="../img/simulation_alpha_1.5.png"/>
-</div>
-```
-
-As depicted, the CTR starts off on average around 10%. As time progresses, the online learning kicks in that shows an increasing rate of CTR. By the end of the simulation, we observe that the data reaches around 15% CTR. One thing to also note is that out of 10,000 data steps, only about slightly less than 1000 was considered aligned.
-
-Since `alpha` is a hyperparameter that pre-determines the emphasis of exploration versus exploitation, I will simulate the CTR of `alpha` = 1.0. This should result in a Policy that has less emphasis on exploring arms with higher uncertainty.
+Before diving deep into simulation results, let's take a look at some statistics of the filtered dataset according to the top 30 movies in terms of user ratings. 
+- There are about 11,995 counts of user ratings
+- The average reward rate is about 31.3%.
 
 <div align="center">
-    <img src="../img/simulation_alpha_1.0.png"/>
+    <img src="../img/hybrid_simulation_avg_reward.png"/>
 </div>
 
-As usual, we see that the CTR starts off with around 10% but it increases moderately to the point around time step at 200. Between t = 200 to 600, we observe a plateau in terms of CTR. This is probably the point where the policy is exploring different arms that have similar uncertainty in terms of the UCB. After t = 600, it seems like the policy has evaluated the different arms sufficiently such that the mean estimate for each arm given the context information becomes precise with lower uncertainty. Thereafter, the CTR improves dramatically as the policy recommends the best arm for each context. With a lower `alpha`, we see that the CTR improves to the point where it ends at around 22%. Also that the total number of aligned time steps is about 50 more than what it was previously.
+Based on some trial and error, using 2 epochs gave me on average about 800 aligned time steps. Increasing the number of epochs will give me more aligned time steps, but with added compute time. If you are interested, you can test out with more epochs to squeeze out more aligned time steps.
 
-For the fun of it, let's test out what happens at `alpha` = 0.5.
+## Alpha = 0.25 & 0.5
+
+Let's see how the LinUCB hybrid policy works with a lower range of `alpha` values at `0.25` and `0.5`.
 
 <div align="center">
-    <img src="../img/simulation_alpha_0.5.png"/>
+    <img src="../img/hybrid_simulation_alpha_0.25.png"/>
 </div>
-
-Based on an even lower weightage of exploration, we see that the new policy has a CTR that blows the previous observed CTRs out of the water. The maximum CTR reached is about 43%. Even with more aligned time steps, the policy was much more effective as shown by its CTR of 30% even at the comparable time step of t = 1000. Also observed is that we do observe a similar plateau in CTR growth rate from t = 200 to 700, where the policy is exploring different arms due to the similar levels of uncertainty. Once the policy learnt enough, the rewards rate shot up dramatically thereafter.
-
-# Beyond LinUCB Disjoint
-
-Coming to the end of this, I showed that the use of contextual bandits makes more sense if you have access to more granular information that might help predict the effectiveness of recommendations. LinUCB Disjoint is only one of many contextual bandit algorithms. The next variant of a linear contextual bandit is called LinUCB Hybrid which was also covered in the same paper ["A Contextual-Bandit Approach to Personalized News Article Recommendation"](https://arxiv.org/abs/1003.0146) by Li et al. 
 
 <div align="center">
-    <img src="../img/paper_hybrid_eqn.png"/>
+    <img src="../img/hybrid_simulation_alpha_0.5.png"/>
 </div>
 
-The hybrid model has an additional feature term `z_t`, which comprises of shared features across various arms. According to the paper, `z_t` is the feature of the current user/article combinations while `β*` is an unknown coefficient vector common to all arms. I will not cover that in this article but I will probably do it in a separate article.
+Using 2 epochs, we managed to obtain about 800 aligned timesteps out of 11,995 observations in the filtered data set which is about 6.5% of the data. Although this might be small, it should be sufficient for "broad stroke" evaluations of the policies under different `alpha` values. Based on randomising the data, we would expect that for 1 epoch pass through of the data, we will get 11,995/30 = 399 data points. Thus, we are on par with around 800 points for 2 epochs.
+
+As shown, both policies managed to obtain a higher CTR of around 40%, which is greater than the average reward rate of 31.3%. Although it might be tempting to say that `alpha = 0.5` is superior than `alpha = 0.25` because of the higher CTR rates, one should always note that this is __online learning__ and the results might be sensitive to how the data is randomly distributed, which affects the order in which different policies are exposed to sequential reward information. 
+
+In general, we see that the LinUCB Hybrid policies with relatively lower `alpha` values do achieve a higher CTR than the benchmark of 31.3%. Let's now try out other policies with higher `alpha` with an emphasis for increased exploration.
+
+## Alpha = 1.0 & 1.5
+
+For `alpha` values of 1.0 and 1.5, we observed the following trends:
+
+<div align="center">
+    <img src="../img/hybrid_simulation_alpha_1.0.png"/>
+</div>
+
+<div align="center">
+    <img src="../img/hybrid_simulation_alpha_1.5.png"/>
+</div>
+
+What is clear is that having too high an `alpha` value defaults to randomly trying out different arms (exploration emphasis), which results in a CTR that is close to the average reward rate in the filtered data set. However, to a certain extent, we do see a slight positive slope with time progression (between t = 400 to 800), which indicates that the policies are indeed learning, but the amount of "useful" learning is limited by the emphasis on exploration.
+
+In this case, where the number of arms may be considered large (30), the focus on exploration might result in inferior engagement rates compared to the results of policies with lower `alpha` values.
+
+# Comparing Disjoint and Hybrid
+
+
+# Analysis Limitations
+
+The whole concept of bandit theory is centered on online learning. Under such simulation experiments, randomisation of the data does affect how the different policies learns with time progression based on the order of observed data. The original dataset was comprised of movies, and the observations may have been collated in chronological order of movie release. Thus, it was necessary to perform randomisation of the data. 
+
+Both the number of arms as well as the similarity between arms in terms of attributes can impact the policy's reward rate. One can try out different number of top movies to see how the `alpha` values play out.
+
+With respect to the specific dataset used, it is also possible to create better contextual information (interaction effect between linear covariates such as agegroup and gender, using zipcodes) or more graular arm attributes to improve the recommendations of the policy.
+
+With this experiment, the MovieLens dataset is also treated as the logged actions of a policy. This required us to only consider cases of aligned actions for reward observations, which resulted in limited aligned time steps. If there are datasets where __the logged actions of a previous policy comes with the probability of chosen actions__, it is then possible to perform offline counterfactual evaluation of different policies for all time steps. Using either the inverse propensity scoring or doubly robust estimator, one can obtain various estimation of new policies using the logged data of a previous policy. For more details, please refer to the tutorial ["SIGIR 2016 Tutorial on Counterfactual Evaluation and Learning
+for Search, Recommendation and Ad Placement"](https://www.cs.cornell.edu/~adith/CfactSIGIR2016/) by Thorsten Joachims and Adith Swaminathan from Cornell University.
 
 # Summary
 
-In summary, I have illustrated the difference between multi-armed bandits and contextual bandits. Building off the concept of the UCB algorithm that is prevalent in the MAB realm, I illustrated the intuition behind the linear UCB contextual bandit, where the payoff is assumed to be a linear function of the context features. This was also done with a simulation experiment of a LinUCB policy with varying `alpha` values, and we observed the impact of the online learning.
+In summary, I have illustrated the key difference between 
+the disjoint and hybrid variants of the LinUCB algorithm, which is centered on incorporating the attributes of arms in the online learning phase. Using the MovieLens dataset, we tried to simulate a recommender system policy with different `alpha` values and compared it against the benchmark. 
 
-The Jupyer notebook that has the relevant code for LinUCB Disjoint implementation can be found [here](https://github.com/kfoofw/bandit_simulations/blob/master/python/contextual_bandits/notebooks/LinUCB_disjoint.ipynb). For more details on MABs and CBs, please refer to my [Github project repo on bandit simulations](https://github.com/kfoofw/bandit_simulations).
+The Jupyer notebook that has the relevant code for LinUCB Hybrid implementation can be found [here](https://github.com/kfoofw/bandit_simulations/blob/master/python/contextual_bandits/notebooks/LinUCB_hybrid.ipynb). For more details on MABs and CBs, please refer to my [Github project repo on bandit simulations](https://github.com/kfoofw/bandit_simulations).

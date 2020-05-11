@@ -7,29 +7,29 @@ This repo is part of my interest to learn more about optimisation for online lea
 
 This repo is segmented into both Python and R.
 - Python: 
-    - __Phase 1 MAB analysis:__ 
-    Comprises coding of certain Multi-Armed Bandit algorithms for experimentation. Largely based on the book ["Bandit Algorithms for Website Optimization"](https://www.oreilly.com/library/view/bandit-algorithms-for/9781449341565/) by John Myles White.
-    - __Phase 2 CB analysis:__ 
-    Implementation of certain contextual bandit algorithms starting with LinUCB based on [A Contextual-Bandit Approach to Personalized News Article Recommendation](https://arxiv.org/pdf/1003.0146.pdf). 
-    - __Phase 3 CB analysis:__ Utilise use `vowpal wabbit` package for online learning for contextual bandits simulation
+    - __Phase 1 (MAB analysis):__ 
+    Comprises coding of certain Multi-Armed Bandit algorithms for experimentation.
+    - __Phase 2 (CB analysis):__ 
+    Implementation of contextual bandit algorithms starting with LinUCB Disjoint and LinUCB Hybrid based on [A Contextual-Bandit Approach to Personalized News Article Recommendation](https://arxiv.org/pdf/1003.0146.pdf). 
+    - __Phase 3 (CB analysis):__ Utilise use `vowpal wabbit` package for online learning for contextual bandits simulation
 - R: 
-    - __Phase 3 MAB & CB analysis:__ Using R library package `contextual` that has a comprehensive ecosystem for different algorithm and policies
+    - __Phase 4 (MAB & CB analysis):__ Using R library package `contextual` that has a comprehensive ecosystem for different algorithm and policies
 
-Phase 1 MAB analysis includes:
+## Analysis:
+
+__Phase 1 MAB analysis includes:__
 - [Epsilon Greedy](https://github.com/kfoofw/bandit_simulations/blob/master/python/multiarmed_bandits/analysis/eps-greedy.md)
 - [SoftMax](https://github.com/kfoofw/bandit_simulations/blob/master/python/multiarmed_bandits/analysis/softmax.md)
 - [UCB](https://github.com/kfoofw/bandit_simulations/blob/master/python/multiarmed_bandits/analysis/ucb.md)
 - [Thompson Sampling](https://github.com/kfoofw/bandit_simulations/blob/master/python/multiarmed_bandits/analysis/ts.md)
 
-Phase 2 CB analysis (Currently ongoing):
+__Phase 2 CB analysis (Currently ongoing):__
 - [LinUCB Disjoint Implementation and Analysis with a Dataset](https://github.com/kfoofw/bandit_simulations/blob/master/python/contextual_bandits/analysis/linUCB%20disjoint%20implementation%20and%20analysis.md)
+- [LinUCB Hybrid Implementation and Analysis with a MovieLens Dataset for Recommender Systems](https://github.com/kfoofw/bandit_simulations/blob/master/python/contextual_bandits/analysis/linUCB%20hybrid%20implementation%20and%20analysis.md)
 
-Phase 3 CB analysis (Future works)
-
-Phase 4 MAB & CB analysis (Future works)
 
 ## Special Mention
-A portion of the code is based on the book ["Bandit Algorithms for Website Optimization"](https://www.oreilly.com/library/view/bandit-algorithms-for/9781449341565/) by John Myles White.
+A portion of the MAB code is based on the book ["Bandit Algorithms for Website Optimization"](https://www.oreilly.com/library/view/bandit-algorithms-for/9781449341565/) by John Myles White.
 
 Microsoft's `vowpal wabbit` package for Python can be found in this [Github repo](https://github.com/VowpalWabbit/vowpal_wabbit).
 

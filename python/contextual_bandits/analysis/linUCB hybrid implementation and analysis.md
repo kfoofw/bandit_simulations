@@ -1,4 +1,4 @@
-# Contextual Bandit: Linear Upper Confidence Bound Hybrid (LinUCB Hybrid) Algorithm
+# Contextual Bandits: Linear Upper Confidence Bound Hybrid (LinUCB Hybrid) Algorithm with MovieLens Dataset
 
 In my previous [post](https://github.com/kfoofw/bandit_simulations/blob/master/python/contextual_bandits/analysis/linUCB%20disjoint%20implementation%20and%20analysis.md), I explained the background behind contextual bandits (CB) as a variant of the multi-armed bandit (MAB) problems that utilises contextual information. With a summary introduction to the upper confidence bound (UCB) algorithm in MAB applications,  I extended the use of that concept in contextual bandits by diving into a detailed implementation of the linear upper confidence bound disjoint (LinUCB Disjoint) contextual bandits. 
 
@@ -436,6 +436,59 @@ In this simulation exercise:
 - To combat the issue of the results being a "once-off" fluke, I decided to run multiple simulations based on different randomised permutations of the dataset (using `np.random.seed`). This was done for a total of 100 randomised permutations of the datasets, after which I found the average of the CTR. 
 - I truncated all CTRs to the shortest run length out of 100 randomised permutations in both policies, such that the average CTR values are comparable.
 
+```
+hybrid_ctr =[]
+disjoint_ctr = []
+
+alpha_value = 0.25
+
+for i in range(100):
+    
+    # Shuffling data order based on random seed
+    np.random.seed(i)
+    filtered_data = filtered_data_original.reindex(np.random.permutation(filtered_data_original.index)).reset_index(drop = True)
+    
+    # Hybrid policy
+    simulation_hybrid_alpha_025 = ctr_simulator(K_arms = n, 
+                                               d = 29,
+                                               k = 29*19,
+                                               alpha = alpha_value, 
+                                               epochs = 2, 
+                                               top_movies_index = top_movies_index, 
+                                               top_movies_features=top_movies_features,
+                                               steps_printout=5000)
+    hybrid_ctr.append(simulation_hybrid_alpha_025["aligned_ctr"])
+    
+    # Disjoint policy
+    simulation_disjoint_alpha_025 = ctr_disjoint_simulator(K_arms = n, 
+                                                           d = 29,
+                                                           alpha = alpha_value, 
+                                                           epochs = 2, 
+                                                           top_movies_index = top_movies_index, 
+                                                           steps_printout=5000)
+    disjoint_ctr.append(simulation_disjoint_alpha_025["aligned_ctr"])
+
+# Find min time step
+min_len = 5000
+
+for i in range(100):
+    if len(hybrid_ctr[i]) < min_len or len(disjoint_ctr[i]) < min_len:
+        min_len = min(len(hybrid_ctr[i]), len(disjoint_ctr[i]))
+                      
+# Initiate list for storing shortened ctr based on the min time steps
+shorten_hybrid_ctr = []
+shorten_disjoint_ctr = []
+
+for i in range(100):
+    # Shortening all ctr to common time steps
+    shorten_hybrid_ctr.append(hybrid_ctr[i][:min_len])
+    shorten_disjoint_ctr.append(disjoint_ctr[i][:min_len])
+
+avg_hybrid_ctr = np.array(shorten_hybrid_ctr).mean(axis = 0)
+avg_disjoint_ctr = np.array(shorten_disjoint_ctr).mean(axis = 0)
+```
+
+
 
 <div align="center">
     <img src="../img/compare_disjoint_hybrid.png"/>
@@ -443,17 +496,21 @@ In this simulation exercise:
 
 Based on all simulations, the shortest simulation run had 576 aligned time steps. Both policies managed to obtain consistently higher reward rates than the benchmark of 31.3%. 
 
-Looking at the early phases of the simulations, we observe that the Disjoint policy has low CTR rates on average compared to the Hybrid policy. This showcases the key advantage of the Hybrid algorithm, which utilises shared features to help model the reward function for arms with similar features. This reduces any chance of dropping off.
+Looking at the early phases of the simulations, we observe that the Disjoint policy has low CTR rates on average compared to the Hybrid policy. This showcases the key advantage of the Hybrid algorithm, which __utilises shared features to help model the reward function for arms with similar features__. This may be critical for applications where customers churn may be affected severely due to the introduction of inferior variants/arms.
 
-As the simulation progresses, we observe that the Hybrid policy CTR slowly decreases until it reaches a plateau. On the other hand, the Disjoint policy eventually has a much higher CTR (44.3%) compared to the Hybrid policy (41.5%)despite starting at low CTR rates. At first this was surprising to me, because I envisioned that the Hybrid solution will always be better than the Disjoint solution. Upon deeper thought, I realised that there will not be the case. Perhaps
+As the simulation progresses, we observe that the Hybrid policy CTR slowly decreases until it reaches a plateau. On the other hand, the Disjoint policy eventually has a much higher CTR (44.3%) compared to the Hybrid policy (41.5%)despite starting at low CTR rates. At first this was surprising to me, because I envisioned that the Hybrid solution will always be better than the Disjoint solution. Upon deeper thought, I realised that there will not be the case. By performing linear regression on the reward payoff rate using both __shared and unshared components__, the unshared components in the Hybrid algorithm have less proportion of the "signal"/variance to explain. 
+
+In terms of the bias-variance tradeoff, I perceive the Disjoint model to be more flexible as it has less bias and more variability, while the Hybrid model is less flexible with more bias due to its __shared components__ that is meant to generalise across different arms. Consequently, we observe that the Disjoint policy has a potential for a higher CTR ceiling as its reward function is not limited by shared components that is found in the Hybrid policy.
+
+As mentioned, `alpha` is a hyperparameter that controls the balance between exploration and exploitation; it must be noted that there might be other `alpha` values that work best for the different policies. 
 
 # Analysis Limitations
 
-The whole concept of bandit theory is centered on online learning. Under such simulation experiments, randomisation of the data does affect how the different policies learns with time progression based on the order of observed data. The original dataset was comprised of movies, and the observations may have been collated in chronological order of movie release. Thus, it was necessary to perform randomisation of the data. 
+The whole concept of bandit theory is centered on online learning. Under such simulation experiments, randomisation of the data does affect how the different policies learns with time progression based on the order of observed data. The original dataset was comprised of movies, and the observations may have been collated in chronological order of movie release. Thus, it was necessary to perform randomisation of the data with multiple simulations to get a better sense of how the policies generalise. 
 
 Both the number of arms as well as the similarity between arms in terms of attributes can impact the policy's reward rate. One can try out different number of top movies to see how the `alpha` values play out.
 
-With respect to the specific dataset used, it is also possible to create better contextual information (interaction effect between linear covariates such as agegroup and gender, using zipcodes) or more graular arm attributes to improve the recommendations of the policy.
+With respect to the specific MovieLens dataset used, it is also possible to create better contextual information (interaction effect between linear covariates such as agegroup and gender, using zipcodes) or more graular arm attributes to improve the recommendations of the policy.
 
 With this experiment, the MovieLens dataset is also treated as the logged actions of a policy. This required us to only consider cases of aligned actions for reward observations, which resulted in limited aligned time steps. If there are datasets where __the logged actions of a previous policy comes with the probability of chosen actions__, it is then possible to perform offline counterfactual evaluation of different policies for all time steps. Using either the inverse propensity scoring or doubly robust estimator, one can obtain various estimation of new policies using the logged data of a previous policy. For more details, please refer to the tutorial ["SIGIR 2016 Tutorial on Counterfactual Evaluation and Learning
 for Search, Recommendation and Ad Placement"](https://www.cs.cornell.edu/~adith/CfactSIGIR2016/) by Thorsten Joachims and Adith Swaminathan from Cornell University.
@@ -461,6 +518,8 @@ for Search, Recommendation and Ad Placement"](https://www.cs.cornell.edu/~adith/
 # Summary
 
 In summary, I have illustrated the key difference between 
-the disjoint and hybrid variants of the LinUCB algorithm, which is centered on incorporating the attributes of arms in the online learning phase. Using the MovieLens dataset, we simulate a recommender system policy with a relatively large number of arms (30). By reweighting the trade-off between explore and exploit with the `alpha` hyperparameter, we compared each policy against the benchmark and noted that in situations where there are large number of arms, `alpha` should be kept smaller to improve learning.
+the Disjoint and Hybrid variants of the LinUCB algorithm, which is centered on incorporating the attributes of arms in the online learning phase. Using the MovieLens dataset, we simulate a recommender system policy with a relatively large number of arms (30). By reweighting the trade-off between explore and exploit with the `alpha` hyperparameter, we compared each policy against the benchmark and noted that in situations where there are large number of arms, `alpha` should be kept smaller to improve learning.
+
+I have also compared the performance of LinUCB Disjoint versus LinUCB Hybrid with multiple simulations using randomised permutations of the data. The performances revealed how the __shared components__ in the Hybrid algorithm can have its advantages but also its disadvantages.
 
 The Jupyer notebook that has the relevant code for LinUCB Hybrid implementation can be found [here](https://github.com/kfoofw/bandit_simulations/blob/master/python/contextual_bandits/notebooks/LinUCB_hybrid.ipynb). For more details on MABs and CBs, please refer to my [Github project repo on bandit simulations](https://github.com/kfoofw/bandit_simulations).

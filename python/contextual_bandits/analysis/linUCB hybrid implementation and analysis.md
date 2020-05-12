@@ -1,6 +1,6 @@
 # Contextual Bandit: Linear Upper Confidence Bound Hybrid (LinUCB Hybrid) Algorithm
 
-In my previous [post], I explained the background behind contextual bandits (CB) as a variant of the multi-armed bandit (MAB) problems that utilises contextual information. With a summary introduction to the upper confidence bound (UCB) algorithm in MAB applications,  I extended the use of that concept in contextual bandits by diving into a detailed implementation of the linear upper confidence bound disjoint (LinUCB Disjoint) contextual bandits. 
+In my previous [post](https://github.com/kfoofw/bandit_simulations/blob/master/python/contextual_bandits/analysis/linUCB%20disjoint%20implementation%20and%20analysis.md), I explained the background behind contextual bandits (CB) as a variant of the multi-armed bandit (MAB) problems that utilises contextual information. With a summary introduction to the upper confidence bound (UCB) algorithm in MAB applications,  I extended the use of that concept in contextual bandits by diving into a detailed implementation of the linear upper confidence bound disjoint (LinUCB Disjoint) contextual bandits. 
 
 The LinUCB Disjoint is based on the concept that the reward rate of each arms are a linear function of its covariates as shown in the following equation:
 
@@ -108,7 +108,7 @@ Here is the Class object for a single LinUCB Hybrid Arm, which has 4 main method
 - __Reward update__: Update information for that arm if it was chosen with the observed reward.
 
 ```{python}
-# Create class object for a single linear ucb disjoint arm
+# Create class object for a single linear ucb hybrid arm
 class linucb_hybrid_arm():
     # Note that shared features coefficients beta_hat is calculated outside of each arm since 
     # it is about shared features across individual arms
@@ -180,7 +180,7 @@ class linucb_hybrid_arm():
 ## LinUCB Hybrid Policy Class Object
 
 Here is the Class object for the LinUCB hybrid policy for K number of arms. It has five main methods:
-- __Initiation__: Create a list of K `linucb_disjoint_arm` objects, along with initiation of `A_node` and `b_node` as building blocks for shared features.
+- __Initiation__: Create a list of K `linucb_hybrid_arm` objects, along with initiation of `A_node` and `b_node` as building blocks for shared features.
 - __Store Arm Features__: Given K number of arm features array, update all arms with their attributes.
 - __Arm selection__: Choose arm based on the arm with the highest UCB for a given time step. 
 - __Shared features update phase 1__: Update shared features building blocks with chosen arm before reward information update is done for that arm.
@@ -262,7 +262,7 @@ class linucb_hybrid_policy():
         self.b_node += reward * z_array - np.dot(chosen_arm_B.T, np.dot(chosen_arm_A_inv, chosen_arm_b))
     
 ```
-## Dataset and CTR Simulator
+## MovieLens Dataset and CTR Simulator
 
 I tried looking for the dataset that was used in the paper ["A Contextual-Bandit Approach to Personalized News Article Recommendation"](https://arxiv.org/abs/1003.0146), but I couldn't get access to it on [Yahoo Labs](https://webscope.sandbox.yahoo.com/catalog.php?datatype=r&guccounter=1). Thus, I decided to use an alternate dataset with some modifications.
 
@@ -282,9 +282,9 @@ Here's a short summary of the preprocessing I did to obtain both context (user) 
 - I only filtered the ratings data to include only the top 30 movies.
 - I also performed randomisation of the data order such that it simulates the online learning environment.
 
-Similar to what we did in the LinUCB disjoint analysis, we only choose to observe the reward and perform online learning IF AND ONLY IF our policy selects the same arm as the logged data at that particular time step. Otherwise, we will move on to the next time step without any updates. Implicitly, this requires the assumption that the data points for the different time steps are independent of each other. For more details on this methodology, please refer to the paper ["Unbiased Offline Evaluation of Contextual-bandit-based News Article Recommendation Algorithms"](https://arxiv.org/abs/1003.5956) by Li et al. For time steps in which the above is true, I term them as "aligned time steps".
+Similar to what we did in the LinUCB disjoint analysis, we only choose to observe the reward and perform online learning IF AND ONLY IF our policy selects the same arm as the logged data at that particular time step. Otherwise, we will move on to the next time step without any updates. Implicitly, this requires the assumption that the data points for the different time steps are independent of each other. For time steps in which the above is true, I term them as "aligned time steps". For more details on this methodology, please refer to the paper ["Unbiased Offline Evaluation of Contextual-bandit-based News Article Recommendation Algorithms"](https://arxiv.org/abs/1003.5956) by Li et al. 
 
-A problem with this is that we will probably get very few aligned time steps out of the data. Thus, I decided to recycle only unused data over repeated epochs, such that we re-use observations to investigate how the hybrid policy plays out in a longer run.
+A problem with this is that we will probably get very few aligned time steps out of the data. Thus, I decided to __recycle only unused observations__ over repeated epochs, such that we can investigate how the hybrid policy plays out in a longer run.
 
 Here is the function for ctr simulation using the `linucb_hybrid_policy` object for a given data input. This function governs the update of the reward observation IF AND ONLY IF the selected arm by the policy object is equivalent to the arm of the logged data set for that particular time step. As mentioned, it also recycles unused data in epochs.
 
@@ -394,7 +394,7 @@ Based on some trial and error, using 2 epochs gave me on average about 800 align
 
 ## Alpha = 0.25 & 0.5
 
-Let's see how the LinUCB hybrid policy works with a lower range of `alpha` values at `0.25` and `0.5`.
+Let's see how the LinUCB hybrid policy works with a lower range of `alpha` values at `0.25` and `0.5`. The blue line represents the simulation CTR, while the red line represents the benchmark of the average reward value if a randomised policy is used.
 
 <div align="center">
     <img src="../img/hybrid_simulation_alpha_0.25.png"/>
@@ -426,8 +426,26 @@ What is clear is that having too high an `alpha` value defaults to randomly tryi
 
 In this case, where the number of arms may be considered large (30), the focus on exploration might result in inferior engagement rates compared to the results of policies with lower `alpha` values.
 
-# Comparing Disjoint and Hybrid
+# Comparing Disjoint and Hybrid Policies 
 
+In this subsection, I will compare the implementation of Disjoint versus Hybrid algorithms to elicit the key advantage of using Hybrid algorithm. 
+
+In this simulation exercise:
+- I kept to the same `alpha` value of 0.25 for both hybrid and disjoint policies. 
+- The choice of 0.25 was also to reduce the relative emphasis on the exploration compared to exploitation.
+- To combat the issue of the results being a "once-off" fluke, I decided to run multiple simulations based on different randomised permutations of the dataset (using `np.random.seed`). This was done for a total of 100 randomised permutations of the datasets, after which I found the average of the CTR. 
+- I truncated all CTRs to the shortest run length out of 100 randomised permutations in both policies, such that the average CTR values are comparable.
+
+
+<div align="center">
+    <img src="../img/compare_disjoint_hybrid.png"/>
+</div>
+
+Based on all simulations, the shortest simulation run had 576 aligned time steps. Both policies managed to obtain consistently higher reward rates than the benchmark of 31.3%. 
+
+Looking at the early phases of the simulations, we observe that the Disjoint policy has low CTR rates on average compared to the Hybrid policy. This showcases the key advantage of the Hybrid algorithm, which utilises shared features to help model the reward function for arms with similar features. This reduces any chance of dropping off.
+
+As the simulation progresses, we observe that the Hybrid policy CTR slowly decreases until it reaches a plateau. On the other hand, the Disjoint policy eventually has a much higher CTR (44.3%) compared to the Hybrid policy (41.5%)despite starting at low CTR rates. At first this was surprising to me, because I envisioned that the Hybrid solution will always be better than the Disjoint solution. Upon deeper thought, I realised that there will not be the case. Perhaps
 
 # Analysis Limitations
 
@@ -443,6 +461,6 @@ for Search, Recommendation and Ad Placement"](https://www.cs.cornell.edu/~adith/
 # Summary
 
 In summary, I have illustrated the key difference between 
-the disjoint and hybrid variants of the LinUCB algorithm, which is centered on incorporating the attributes of arms in the online learning phase. Using the MovieLens dataset, we tried to simulate a recommender system policy with different `alpha` values and compared it against the benchmark. 
+the disjoint and hybrid variants of the LinUCB algorithm, which is centered on incorporating the attributes of arms in the online learning phase. Using the MovieLens dataset, we simulate a recommender system policy with a relatively large number of arms (30). By reweighting the trade-off between explore and exploit with the `alpha` hyperparameter, we compared each policy against the benchmark and noted that in situations where there are large number of arms, `alpha` should be kept smaller to improve learning.
 
 The Jupyer notebook that has the relevant code for LinUCB Hybrid implementation can be found [here](https://github.com/kfoofw/bandit_simulations/blob/master/python/contextual_bandits/notebooks/LinUCB_hybrid.ipynb). For more details on MABs and CBs, please refer to my [Github project repo on bandit simulations](https://github.com/kfoofw/bandit_simulations).

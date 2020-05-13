@@ -15,7 +15,7 @@ This repo is segmented into both Python and R.
 - R: 
     - __Phase 4 (MAB & CB analysis):__ Using R library package `contextual` that has a comprehensive ecosystem for different algorithm and policies
 
-## Analysis:
+## Analysis and Code Implementation
 
 __Phase 1 MAB analysis includes:__
 - [Epsilon Greedy](https://github.com/kfoofw/bandit_simulations/blob/master/python/multiarmed_bandits/analysis/eps-greedy.md)
